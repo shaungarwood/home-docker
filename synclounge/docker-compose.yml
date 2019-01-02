@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  synclounge:
+    image: starbix/synclounge
+    container_name: synclounge
+    restart: always
+    ports:
+      - "8088:8088"
+      - "8089:8089"
+    environment:
+      - DOMAIN=pp.mildlysexy.com

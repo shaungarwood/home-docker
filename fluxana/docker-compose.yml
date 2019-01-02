@@ -1,0 +1,47 @@
+version: '3.2'
+
+services:
+
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    environment:
+      - INFLUXDB_DB=mydb
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=supersecretpassword
+      - INFLUXDB_USER=user
+      - INFLUXDB_USER_PASSWORD=secretpassword
+    networks:
+      - influxdb
+    ports:
+      - "8086:8086"
+      - "25826:25826/udp"
+    volumes:
+      - ./influxdb:/var/lib/influxdb
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    depends_on:
+      - influxdb
+    networks:
+      - influxdb
+    ports:
+      - "3000:3000"
+    volumes:
+      - type: bind
+        source: ~/data/fluxana/grafana/data
+        target: /var/lib/grafana
+      - type: bind
+        source: ~/data/fluxana/grafana/dashboards
+        target: /var/lib/grafana/dashboards
+      - type: bind
+        source: ~/data/fluxana/grafana/provisioning
+        target: /etc/grafana/provisioning
+    restart: always
+# mkdir -p ~/data/fluxana/grafana/{data,dashboards,provisioning}
+# sudo chown 472:472 -R ~/data/fluxana/grafana/
+
+networks:
+  influxdb:

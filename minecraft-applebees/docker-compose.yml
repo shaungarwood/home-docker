@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  mc-applebees:
+    container_name: 'mc-applebees'
+    image: itzg/minecraft-server
+    environment:
+      - EULA=TRUE
+      - MEMORY=2G
+    ports:
+      - 25565:25565
+    volumes:
+      - ~/data/minecraft-applebees:/data

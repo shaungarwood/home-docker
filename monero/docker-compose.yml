@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  monero:
+    image: 'kannix/monero-full-node'
+    container_name: monero
+    ports:
+      - '18080:18080'
+      - '18081:18081'
+    volumes:
+      - ~/data/monero/:/home/monero/.bitmonero
+    tty: true

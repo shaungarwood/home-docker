@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  mc-windy:
+    container_name: 'mc-windy'
+    image: itzg/minecraft-server
+    environment:
+      - EULA=TRUE
+      - MEMORY=2G
+    ports:
+      - 25566:25566
+    volumes:
+      - ~/data/minecraft-windy:/data

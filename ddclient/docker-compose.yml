@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  ddclient:
+    image: linuxserver/ddclient
+    container_name: ddclient
+    restart: always
+    environment:
+      - TZ=America/Denver
+    ports:
+      - "9091:9091"
+    volumes:
+      - ~/docker/ddclient/:/config
