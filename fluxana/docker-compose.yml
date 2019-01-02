@@ -40,6 +40,8 @@ services:
         source: ~/data/fluxana/grafana/provisioning
         target: /etc/grafana/provisioning
     restart: always
+
+# have to do this because of some grafana change
 # mkdir -p ~/data/fluxana/grafana/{data,dashboards,provisioning}
 # sudo chown 472:472 -R ~/data/fluxana/grafana/
 
