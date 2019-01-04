@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  telegraf:
+    image: telegraf
+    container_name: telegraf-system
+    restart: always
+    volumes:
+      - /proc:/host/proc:ro
+      - $PWD/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    environment:
+      - HOST_PROC=/host/proc
+      - HOSTNAME
+      - INFLUXDB_DB
+      - INFLUXDB_URL
+    networks:
+      - fluxana_influxdb
+
+networks:
+  fluxana_influxdb:
+    external: true
