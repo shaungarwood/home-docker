@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  modem-stats:
+    build: ./
+    container_name: modem-stats
+    restart: always
+    networks:
+      - fluxana_influxdb
+
+networks:
+  fluxana_influxdb:
+    external: true

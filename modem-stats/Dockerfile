@@ -8,6 +8,6 @@ WORKDIR /usr/src/app
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
-COPY . .
+COPY code/ .
 
-CMD ["pry"]
+CMD ["./run.sh"]
