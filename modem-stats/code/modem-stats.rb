@@ -134,12 +134,12 @@ data = [
   },
   {
     series: 'dsl_status',
-    tags:   {dsl: 1},
+    tags:   {dsl: '1'},
     values: modem['dsl1_status']
   },
   {
     series: 'dsl_status',
-    tags:   {dsl: 2},
+    tags:   {dsl: '2'},
     values: modem['dsl2_status']
   }
 ]
