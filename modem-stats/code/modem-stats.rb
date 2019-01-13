@@ -2,7 +2,6 @@
 
 require 'mechanize'
 require 'influxdb'
-require 'dotenv'
 
 class String
   def remove_html!
@@ -10,7 +9,17 @@ class String
   end
 end
 
-Dotenv.load
+if ENV['ROUTER_URL'].nil?
+  puts "environmental variables not set, exiting"
+  exit 1
+end
+
+# ROUTER_URL
+# ROUTER_USER
+# ROUTER_PASS
+# INFLUXDB_URL
+# DATABASE
+
 modem = {}
 
 agent = Mechanize.new
@@ -62,6 +71,47 @@ lan_device_log.map! do |e|
 end
 modem['lan_device_log'] = lan_device_log
 
+# internet status
+res = agent.get(home + "/GetInternetStatus.html")
+internet_status = res.body.split("||")
+modem['internet'] = {
+  'uptime'      => internet_status[12], # 3 Days, 1H:31M:24S
+  'pkts_received'    => internet_status[13].to_i, # 183780761
+  'pkts_transmitted' => internet_status[14].to_i  # 183780761
+}
+
+# connection status
+res = agent.get(home + "/GetConnectionStatus.html")
+connection_status = res.body.split("|")
+modem['connection'] = {
+  'line_1_download' => connection_status[0].to_f, # 43.646
+  'line_1_upload'   => connection_status[1].to_f, # 5.501
+  'line_1_status'   => connection_status[2],      # Showtime
+  'wan_status'      => connection_status[3],      # CONNECTED
+  'bonding_status'  => connection_status[4].to_i, # 1
+  'line_2_download' => connection_status[5].to_f, # 43.646
+  'line_2_upload'   => connection_status[6].to_f, # 5.501
+  'line_2_status'   => connection_status[7],      # Showtime
+  'line_3_upload'   => connection_status[8].to_f, # 11.002
+  'line_3_download' => connection_status[9].to_f  # 87.292
+}
+
+# dsl1 status
+res = agent.get(home + "/GetDslStatus.html")
+dsl_status = res.body.split("||")
+modem['dsl1_status'] = {
+  'rx_bytes_total' => dsl_status[30].to_f, # 2912728.936
+  'tx_bytes_total' => dsl_status[31].to_f  # 4246092.544
+}
+
+# dsl2 status
+res = agent.get(home + "/GetDslStatus2.html")
+dsl_status = res.body.split("||")
+modem['dsl2_status'] = {
+  'rx_bytes_total' => dsl_status[30].to_f, # 2912728.936
+  'tx_bytes_total' => dsl_status[31].to_f  # 4246092.544
+}
+
 # write to influxdb
 influxdb = InfluxDB::Client.new(ENV['DATABASE'], url: ENV['INFLUXDB_URL'])
 
@@ -73,7 +123,30 @@ data = [
   {
     series: 'sessions',
     values: modem['sessions']
+  },
+  {
+    series: 'internet',
+    values: modem['internet']
+  },
+  {
+    series: 'connection',
+    values: modem['connection']
+  },
+  {
+    series: 'dsl_status',
+    tags:   {dsl: 1},
+    values: modem['dsl1_status']
+  },
+  {
+    series: 'dsl_status',
+    tags:   {dsl: 2},
+    values: modem['dsl2_status']
   }
 ]
 
-influxdb.write_points(data)
+begin
+  influxdb.write_points(data)
+  puts Time.now.to_s + ": wrote to influxdb"
+rescue Exception => e
+  puts e.inspect
+end

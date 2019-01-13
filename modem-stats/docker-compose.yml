@@ -7,6 +7,12 @@ services:
     restart: always
     networks:
       - fluxana_influxdb
+    environment:
+      - ROUTER_URL
+      - ROUTER_USER
+      - ROUTER_PASS
+      - INFLUXDB_URL
+      - DATABASE
 
 networks:
   fluxana_influxdb:
