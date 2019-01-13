@@ -35,6 +35,8 @@ services:
       - WEBPROXY_ENABLED=false
       - LOCAL_NETWORK=${LOCAL_NETWORK}
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 --mute-replay-warnings
+      - TRANSMISSION_SPEED_LIMIT_UP
+      - TRANSMISSION_SPEED_LIMIT_UP_ENABLED
     volumes:
       - ${MOUNT_POINT}/transmission:/data
       - /etc/localtime:/etc/localtime:ro
