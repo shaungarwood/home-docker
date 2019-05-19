@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+#  matt_mc:
+#    build: ./matt_mc
+  questionable_content:
+    build: ./questionable_content
+    container_name: telegram-qc

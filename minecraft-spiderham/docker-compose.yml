@@ -4,6 +4,7 @@ services:
   mc-spiderham:
     container_name: 'mc-spiderham'
     image: itzg/minecraft-server
+    restart: always
     stdin_open: true
     tty: true
     environment:

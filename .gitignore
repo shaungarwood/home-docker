@@ -1,2 +1,5 @@
 .env
 notes.txt
+nextcloud/new_data/*
+nextcloud/app/*
+nextcloud/proxy/*
